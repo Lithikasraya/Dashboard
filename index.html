@@ -192,7 +192,7 @@
             data: [], 
             borderColor: color, 
             backgroundColor: color+"33", 
-            fill: false, // 🔥 removed shaded background
+            fill: false, 
             tension: 0.4,
             pointBackgroundColor: color,
             pointBorderColor: "#000",
@@ -211,8 +211,8 @@
     }
 
     const pm25Chart = createChart("pm25Chart", "PM2.5", "red");
-    const pm10Chart = createChart("pm10Chart", "PM10", "orange");
-    const tempChart = createChart("tempChart", "Temperature", "blue");
+    const pm10Chart = createChart("pm10Chart", "orange");
+    const tempChart = createChart("tempChart", "Temperature", "#436EBE");  // 🔵 changed
     const humidityChart = createChart("humidityChart", "Humidity", "green");
     const noiseChart = createChart("noiseChart", "Noise", "purple");
 
