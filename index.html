@@ -13,7 +13,6 @@
       --shadow: rgba(0, 0, 0, 0.1);
       --accent: #0078ff;
     }
-
     .dark-theme {
       --bg-color: #1e1e2f;
       --text-color: #f4f4f4;
@@ -22,7 +21,6 @@
       --shadow: rgba(255, 255, 255, 0.1);
       --accent: #00c8ff;
     }
-
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -31,39 +29,29 @@
       color: var(--text-color);
       transition: background 0.3s, color 0.3s;
     }
-
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 15px 30px;
       background: var(--bg-color);
-      color: var(--text-color);
       border-bottom: 1px solid var(--box-border);
       box-shadow: 0 2px 8px var(--shadow);
       position: sticky;
       top: 0;
       z-index: 1000;
     }
-
-    .header-left {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-    }
-
+    .header-left h1 { margin: 0; color: var(--accent); }
     .header-right {
       display: flex;
       align-items: center;
       gap: 15px;
     }
-
     header img {
       height: 50px;
       border-radius: 8px;
     }
-
-    .theme-toggle, .back-btn {
+    .theme-toggle, .deploys-btn {
       padding: 8px 16px;
       border: 2px solid var(--text-color);
       border-radius: 10px;
@@ -74,19 +62,40 @@
       font-weight: bold;
       transition: 0.3s;
     }
-
-    .theme-toggle:hover, .back-btn:hover {
+    .theme-toggle:hover, .deploys-btn:hover {
       background: var(--text-color);
       color: var(--bg-color);
     }
-
-    main {
+    main { padding: 20px; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .data-card {
+      background: var(--card-bg);
+      border-radius: 15px;
       padding: 20px;
+      text-align: center;
+      box-shadow: 0 4px 12px var(--shadow);
+      border: 1px solid var(--box-border);
+      transition: transform 0.2s;
+    }
+    .data-card:hover { transform: scale(1.05); }
+    .data-card h3 { margin: 0; font-size: 18px; color: var(--accent); }
+    .data-card p { font-size: 22px; font-weight: bold; margin: 10px 0 0; }
+    .last-updated {
+      margin-top: 10px;
+      font-size: 14px;
+      color: gray;
+      text-align: right;
+    }
+    .chart-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
     }
-
     .card {
       background: var(--card-bg);
       border-radius: 15px;
@@ -94,188 +103,105 @@
       box-shadow: 0 4px 12px var(--shadow);
       border: 1px solid var(--box-border);
     }
-
-    .card h2 {
-      margin-top: 0;
-      margin-bottom: 10px;
-      color: var(--accent);
-    }
-
-    canvas {
-      width: 100% !important;
-      height: 300px !important;
-    }
-
-    /* 📌 Live Data Box Styling */
-    .data-box {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .data-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 12px;
-      background: var(--bg-color);
-      border-radius: 10px;
-      border: 1px solid var(--box-border);
-      box-shadow: 0 2px 6px var(--shadow);
-      transition: transform 0.2s;
-    }
-
-    .data-item:hover {
-      transform: scale(1.02);
-    }
-
-    .last-updated {
-      margin-top: 15px;
-      font-size: 14px;
-      color: gray;
-      text-align: right;
-    }
+    .card h2 { margin: 0 0 10px; color: var(--accent); }
+    canvas { width: 100% !important; height: 300px !important; }
   </style>
 </head>
 <body>
   <header>
     <div class="header-left">
-      <h1>Air Quality Monitoring Dashboard</h1>
-      <a href="https://www.thinglink.com/view/scene/2011027455682282149" target="_blank">🌍 Deploys</a>
+      <h1>Air Quality Dashboard</h1>
     </div>
     <div class="header-right">
-      <button class="back-btn" onclick="goBack()">⬅ Back</button>
+      <button class="deploys-btn" onclick="goDeploys()">🌍 Deploys</button>
       <button class="theme-toggle" onclick="toggleTheme()">🌙 Toggle</button>
-      <img src="https://i.ibb.co/KxGwCgL6/Kietsmartcity.jpg" alt="Kietsmartcity">
+      <img src="https://i.ibb.co/KxGwCgL6/Kietsmartcity.jpg" alt="Logo">
     </div>
   </header>
 
   <main>
-    <!-- 📌 Live Data Box -->
-    <div class="card">
-      <h2>📊 Live Sensor Data</h2>
-      <div class="data-box" id="liveData">
-        <div class="data-item"><span>PM2.5</span><span id="pm25">--</span> μg/m³</div>
-        <div class="data-item"><span>PM10</span><span id="pm10">--</span> μg/m³</div>
-        <div class="data-item"><span>Temperature</span><span id="temperature">--</span> °C</div>
-        <div class="data-item"><span>Humidity</span><span id="humidity">--</span> %</div>
-        <div class="data-item"><span>Noise</span><span id="noise">--</span> dB</div>
-      </div>
-      <p class="last-updated" id="lastUpdated">Last updated: --</p>
+    <!-- 📌 Live Data Cards -->
+    <div class="cards">
+      <div class="data-card"><h3>PM2.5</h3><p id="pm25">-- μg/m³</p></div>
+      <div class="data-card"><h3>PM10</h3><p id="pm10">-- μg/m³</p></div>
+      <div class="data-card"><h3>Temperature</h3><p id="temperature">-- °C</p></div>
+      <div class="data-card"><h3>Humidity</h3><p id="humidity">-- %</p></div>
+      <div class="data-card"><h3>Noise</h3><p id="noise">-- dB</p></div>
     </div>
+    <p class="last-updated" id="lastUpdated">Last updated: --</p>
 
-    <!-- 📌 Graphs -->
-    <div class="card"><h2>PM2.5 Levels</h2><canvas id="pm25Chart"></canvas></div>
-    <div class="card"><h2>PM10 Levels</h2><canvas id="pm10Chart"></canvas></div>
-    <div class="card"><h2>Temperature (°C)</h2><canvas id="tempChart"></canvas></div>
-    <div class="card"><h2>Humidity (%)</h2><canvas id="humidityChart"></canvas></div>
-    <div class="card"><h2>Noise Levels (dB)</h2><canvas id="noiseChart"></canvas></div>
+    <!-- 📊 Graphs -->
+    <div class="chart-grid">
+      <div class="card"><h2>PM2.5 Levels</h2><canvas id="pm25Chart"></canvas></div>
+      <div class="card"><h2>PM10 Levels</h2><canvas id="pm10Chart"></canvas></div>
+      <div class="card"><h2>Temperature (°C)</h2><canvas id="tempChart"></canvas></div>
+      <div class="card"><h2>Humidity (%)</h2><canvas id="humidityChart"></canvas></div>
+      <div class="card"><h2>Noise Levels (dB)</h2><canvas id="noiseChart"></canvas></div>
+    </div>
   </main>
 
-  <!-- ✅ Correct Chart.js include -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    // 🌙 Theme Toggle
     function toggleTheme() {
       document.body.classList.toggle("dark-theme");
     }
-
-    // ⬅ Back Button
-    function goBack() {
-      window.location.href = "index.html"; // change if your main page is different
+    function goDeploys() {
+      window.location.href = "deploys.html";
     }
-
-    // 📊 Chart creator
     function createChart(ctxId, label, color) {
       return new Chart(document.getElementById(ctxId), {
         type: 'line',
-        data: {
-          labels: [],
-          datasets: [{
-            label: label,
-            data: [],
-            borderColor: color,
-            backgroundColor: color + "33",
-            fill: true,
-            tension: 0.4
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { title: { display: true, text: "Time" }},
-            y: { beginAtZero: true }
-          }
-        }
+        data: { labels: [], datasets: [{ label, data: [], borderColor: color, backgroundColor: color+"33", fill: true, tension: 0.4 }] },
+        options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: "Time"}}, y: { beginAtZero: true } } }
       });
     }
-
-    // Initialize charts
     const pm25Chart = createChart("pm25Chart", "PM2.5", "red");
     const pm10Chart = createChart("pm10Chart", "PM10", "orange");
     const tempChart = createChart("tempChart", "Temperature", "blue");
     const humidityChart = createChart("humidityChart", "Humidity", "green");
     const noiseChart = createChart("noiseChart", "Noise", "purple");
 
-    // 📡 ThingSpeak Config
-    const channelID = "3063550"; // 🔹 replace with your channel ID
-    const readAPIKey = "AXHRNGPKTEO1TU2P"; // 🔹 replace with your Read API Key
-    const results = 50; // show last 50 entries
+    const channelID = "3063550";  
+    const readAPIKey = "AXHRNGPKTEO1TU2P";  
+    const results = 50;  
     const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=${results}`;
 
-    // 📡 Fetch ThingSpeak Data
     async function fetchData() {
       try {
         const res = await fetch(url);
         const data = await res.json();
-
         let feeds = data.feeds || [];
-
-        // Time labels
         let labels = feeds.map(f => f.created_at ? new Date(f.created_at).toLocaleTimeString() : "");
-
-        // Safely parse values
         let pm25 = feeds.map(f => f.field1 ? parseFloat(f.field1) : null);
         let pm10 = feeds.map(f => f.field2 ? parseFloat(f.field2) : null);
         let temp = feeds.map(f => f.field3 ? parseFloat(f.field3) : null);
         let humidity = feeds.map(f => f.field4 ? parseFloat(f.field4) : null);
         let noise = feeds.map(f => f.field5 ? parseFloat(f.field5) : null);
 
-        // Update Charts
         updateChart(pm25Chart, labels, pm25);
         updateChart(pm10Chart, labels, pm10);
         updateChart(tempChart, labels, temp);
         updateChart(humidityChart, labels, humidity);
         updateChart(noiseChart, labels, noise);
 
-        // Update Live Data Box (latest values)
         let latest = feeds[feeds.length - 1] || {};
-        document.getElementById("pm25").textContent = latest.field1 || "--";
-        document.getElementById("pm10").textContent = latest.field2 || "--";
-        document.getElementById("temperature").textContent = latest.field3 || "--";
-        document.getElementById("humidity").textContent = latest.field4 || "--";
-        document.getElementById("noise").textContent = latest.field5 || "--";
-
-        // Update last updated time
+        document.getElementById("pm25").textContent = (latest.field1 || "--") + " μg/m³";
+        document.getElementById("pm10").textContent = (latest.field2 || "--") + " μg/m³";
+        document.getElementById("temperature").textContent = (latest.field3 || "--") + " °C";
+        document.getElementById("humidity").textContent = (latest.field4 || "--") + " %";
+        document.getElementById("noise").textContent = (latest.field5 || "--") + " dB";
         if (latest.created_at) {
-          document.getElementById("lastUpdated").textContent =
-            "Last updated: " + new Date(latest.created_at).toLocaleString();
+          document.getElementById("lastUpdated").textContent = "Last updated: " + new Date(latest.created_at).toLocaleString();
         }
       } catch (err) {
         console.error("ThingSpeak fetch failed:", err);
       }
     }
-
-    // Update chart data
     function updateChart(chart, labels, data) {
       chart.data.labels = labels;
       chart.data.datasets[0].data = data;
       chart.update();
     }
-
-    // 🔄 Load data every 20s
     fetchData();
     setInterval(fetchData, 20000);
   </script>
