@@ -102,9 +102,37 @@
       padding: 20px;
       box-shadow: 0 4px 12px var(--shadow);
       border: 1px solid var(--box-border);
+      position: relative;
     }
     .card h2 { margin: 0 0 10px; color: var(--accent); }
+    .fullscreen-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .fullscreen-btn:hover { background: #005bb5; }
     canvas { width: 100% !important; height: 300px !important; }
+    .fullscreen {
+      position: fixed !important;
+      top: 50% !important;
+      left: 50% !important;
+      transform: translate(-50%, -50%) !important;
+      width: 90% !important;
+      height: 80% !important;
+      z-index: 2000 !important;
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px var(--shadow);
+    }
   </style>
 </head>
 <body>
@@ -132,11 +160,11 @@
 
     <!-- 📊 Graphs -->
     <div class="chart-grid">
-      <div class="card"><h2>PM2.5 Levels</h2><canvas id="pm25Chart"></canvas></div>
-      <div class="card"><h2>PM10 Levels</h2><canvas id="pm10Chart"></canvas></div>
-      <div class="card"><h2>Temperature (°C)</h2><canvas id="tempChart"></canvas></div>
-      <div class="card"><h2>Humidity (%)</h2><canvas id="humidityChart"></canvas></div>
-      <div class="card"><h2>Noise Levels (dB)</h2><canvas id="noiseChart"></canvas></div>
+      <div class="card"><h2>PM2.5 Levels</h2><button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullscreen</button><canvas id="pm25Chart"></canvas></div>
+      <div class="card"><h2>PM10 Levels</h2><button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullscreen</button><canvas id="pm10Chart"></canvas></div>
+      <div class="card"><h2>Temperature (°C)</h2><button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullscreen</button><canvas id="tempChart"></canvas></div>
+      <div class="card"><h2>Humidity (%)</h2><button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullscreen</button><canvas id="humidityChart"></canvas></div>
+      <div class="card"><h2>Noise Levels (dB)</h2><button class="fullscreen-btn" onclick="toggleFullscreen(this)">⛶ Fullscreen</button><canvas id="noiseChart"></canvas></div>
     </div>
   </main>
 
@@ -148,13 +176,39 @@
     function goDeploys() {
       window.location.href = "deploys.html";
     }
+    function toggleFullscreen(btn) {
+      const card = btn.parentElement;
+      card.classList.toggle("fullscreen");
+    }
+
     function createChart(ctxId, label, color) {
       return new Chart(document.getElementById(ctxId), {
         type: 'line',
-        data: { labels: [], datasets: [{ label, data: [], borderColor: color, backgroundColor: color+"33", fill: true, tension: 0.4 }] },
-        options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: "Time"}}, y: { beginAtZero: true } } }
+        data: { 
+          labels: [], 
+          datasets: [{ 
+            label, 
+            data: [], 
+            borderColor: color, 
+            backgroundColor: color+"33", 
+            fill: false, // 🔥 removed shaded background
+            tension: 0.4,
+            pointBackgroundColor: color,
+            pointBorderColor: "#000",
+            pointRadius: 4
+          }] 
+        },
+        options: { 
+          responsive: true, 
+          maintainAspectRatio: false, 
+          scales: { 
+            x: { title: { display: true, text: "Time"}}, 
+            y: { beginAtZero: true } 
+          } 
+        }
       });
     }
+
     const pm25Chart = createChart("pm25Chart", "PM2.5", "red");
     const pm10Chart = createChart("pm10Chart", "PM10", "orange");
     const tempChart = createChart("tempChart", "Temperature", "blue");
@@ -163,7 +217,7 @@
 
     const channelID = "3063550";  
     const readAPIKey = "AXHRNGPKTEO1TU2P";  
-    const results = 50;  
+    const results = 30; 
     const url = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${readAPIKey}&results=${results}`;
 
     async function fetchData() {
