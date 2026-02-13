@@ -143,12 +143,12 @@ export const Dashboard = () => {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-        <StatCard title="Live Power" value="4.20" unit="kW" icon={Zap} sparklineData={SPARKLINE_DATA} />
-        <StatCard title="Voltage" value="240" unit="V" icon={Activity} sparklineData={SPARKLINE_DATA} />
-        <StatCard title="Current" value="18.5" unit="A" icon={Wind} sparklineData={SPARKLINE_DATA} />
-        <StatCard title="Grid Export" value={exportValue} unit="kWh" icon={ArrowUpRight} sparklineData={SPARKLINE_DATA} />
-        <StatCard title="Grid Import" value={importValue} unit="kWh" icon={ArrowDownRight} sparklineData={SPARKLINE_DATA} />
-        <StatCard title="Temperature" value="32" unit="°C" icon={Thermometer} sparklineData={SPARKLINE_DATA} />
+        <StatCard title="Live Power" value="4.20" unit="kW" change={5} color="bg-yellow-500" icon={Zap} sparklineData={SPARKLINE_DATA} />
+        <StatCard title="Voltage" value="240" unit="V" change={2} color="bg-blue-500" icon={Activity} sparklineData={SPARKLINE_DATA} />
+        <StatCard title="Current" value="18.5" unit="A" change={1} color="bg-purple-500" icon={Wind} sparklineData={SPARKLINE_DATA} />
+        <StatCard title="Grid Export" value={exportValue} unit="kWh" change={8} color="bg-green-500" icon={ArrowUpRight} sparklineData={SPARKLINE_DATA} />
+        <StatCard title="Grid Import" value={importValue} unit="kWh" change={-3} color="bg-red-500" icon={ArrowDownRight} sparklineData={SPARKLINE_DATA} />
+        <StatCard title="Temperature" value="32" unit="°C" change={3} color="bg-orange-500" icon={Thermometer} sparklineData={SPARKLINE_DATA} />
       </div>
 
       {/* Charts */}
