@@ -88,7 +88,7 @@ export const Dashboard = () => {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">5kW Home Plant</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">3kW Home Plant</h2>
           <p className="text-sm text-slate-500 dark:text-slate-400">Live monitoring of your solar ecosystem</p>
         </div>
         <div className="flex items-center gap-3">
